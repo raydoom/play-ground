@@ -1,8 +1,13 @@
+# coding=utf8
+
 import jwt, datetime, time
 from django.contrib.auth.hashers import make_password, check_password
 from app.models import UserInfo
+from app.utils.config_info_formater import ConfigInfo
 
-SECRET_KEY = 'maxd'
+# 获取配置文件中的jwt_secret_key
+config = ConfigInfo()
+jwt_secret_key = config.config_info.get('secret_info').get('jwt_secret_key')
 
 class Auth():
     # 生成认证Token, 参数user_id: int类型, 参数login_time: 类型int(timestamp)
@@ -19,7 +24,7 @@ class Auth():
             }
             return jwt.encode(
                 payload,
-                SECRET_KEY,
+                jwt_secret_key,
                 algorithm='HS256'
             )
         except Exception as e:
@@ -27,9 +32,9 @@ class Auth():
     # 验证Token
     def decode_auth_token(auth_token):
         try:
-            # payload = jwt.decode(auth_token, SECRET_KEY, leeway=datetime.timedelta(seconds=10))
+            # payload = jwt.decode(auth_token, jwt_secret_key, leeway=datetime.timedelta(seconds=10))
             # 取消过期时间验证
-            payload = jwt.decode(auth_token, SECRET_KEY, options={'verify_exp': False})
+            payload = jwt.decode(auth_token, jwt_secret_key, options={'verify_exp': False})
             if ('data' in payload and 'user_id' in payload['data']):
                 return payload
             else:
@@ -60,12 +65,15 @@ class Auth():
             result = {'state':'fail' ,'data':'', 'msg':'没有提供认证token'}
         else:
             payload = self.decode_auth_token(auth_token)
-            user = UserInfo.objects.get(user_id=payload['data']['user_id'])
-            if (user is None):
-                result = {'state':'fail' ,'data':'', 'msg':'找不到该用户信息'}
-            else:
-                if (user.login_time == payload['data']['login_time']):
-                    result = {'state':'succ', 'data':user.user_id, 'msg':'请求成功'}
+            if isinstance(payload, dict):
+                user = UserInfo.objects.get(user_id=payload['data']['user_id'])
+                if (user is None):
+                    result = {'state':'fail' ,'data':'', 'msg':'找不到该用户信息'}
                 else:
-                    result = {'state':'fail' ,'data':'', 'msg':'Token已更改，请重新登录获取'}
+                    if (user.login_time == payload['data']['login_time']):
+                        result = {'state':'succ', 'data':user.user_id, 'msg':'请求成功'}
+                    else:
+                        result = {'state':'fail' ,'data':'', 'msg':'Token已更改，请重新登录获取'}
+            else:
+                result = {'state':'fail' ,'data':'', 'msg':payload}
         return result
