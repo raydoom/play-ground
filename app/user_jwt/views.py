@@ -56,6 +56,6 @@ class LoginView(View):
 # 获取用户信息
 class GetUserInfoView(View):
 	def get(self, request):
-		req_data_msg = json.loads(request.GET.get('dataMsg'))
-		result = Auth.identify(Auth, req_data_msg)
+		#req_data_msg = json.loads(request.GET.get('dataMsg'))
+		result = Auth.identify(Auth, request)
 		return JsonResponse(result)

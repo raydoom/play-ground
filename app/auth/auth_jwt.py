@@ -54,8 +54,8 @@ class Auth():
             else:
                 return ({'state':'fail' ,'data':'', 'msg':'密码不正确'})
     # 用户鉴权
-    def identify(self, req_data_msg):
-        auth_token = req_data_msg.get('Head').get('auth_token', '')
+    def identify(self, request):
+        auth_token = request.META.get('HTTP_AUTHORIZATION')
         if not auth_token:
             result = {'state':'fail' ,'data':'', 'msg':'没有提供认证token'}
         else:
