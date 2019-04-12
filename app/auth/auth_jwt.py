@@ -55,11 +55,11 @@ class Auth():
                 return ({'state':'fail' ,'data':'', 'msg':'密码不正确'})
     # 用户鉴权
     def identify(self, req_data_msg):
-        jwt_token = req_data_msg.get('Head').get('jwt_token', '')
-        if not jwt_token:
+        auth_token = req_data_msg.get('Head').get('auth_token', '')
+        if not auth_token:
             result = {'state':'fail' ,'data':'', 'msg':'没有提供认证token'}
         else:
-            payload = self.decode_auth_token(jwt_token)
+            payload = self.decode_auth_token(auth_token)
             user = UserInfo.objects.get(user_id=payload['data']['user_id'])
             if (user is None):
                 result = {'state':'fail' ,'data':'', 'msg':'找不到该用户信息'}
