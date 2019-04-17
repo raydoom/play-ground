@@ -32,7 +32,7 @@ class Auth():
     # 验证Token
     def decode_auth_token(auth_token):
         try:
-            # payload = jwt.decode(auth_token, jwt_secret_key, leeway=datetime.timedelta(seconds=10))
+            #payload = jwt.decode(auth_token, jwt_secret_key, leeway=datetime.timedelta(seconds=30))
             # 取消过期时间验证
             payload = jwt.decode(auth_token, jwt_secret_key, options={'verify_exp': False})
             if ('data' in payload and 'user_id' in payload['data']):
@@ -60,20 +60,25 @@ class Auth():
                 return ({'state':'fail' ,'data':'', 'msg':'密码不正确'})
     # 用户鉴权
     def identify(self, request):
-        auth_token = request.META.get('HTTP_AUTHORIZATION')
-        if not auth_token:
-            result = {'state':'fail' ,'data':'', 'msg':'没有提供认证token'}
-        else:
-            payload = self.decode_auth_token(auth_token)
-            if isinstance(payload, dict):
-                user = UserInfo.objects.get(user_id=payload['data']['user_id'])
-                if (user is None):
-                    result = {'state':'fail' ,'data':'', 'msg':'找不到该用户信息'}
-                else:
-                    if (user.login_time == payload['data']['login_time']):
-                        result = {'state':'succ', 'data':user.user_id, 'msg':'请求成功'}
-                    else:
-                        result = {'state':'fail' ,'data':'', 'msg':'Token已更改，请重新登录获取'}
+        auth_header = request.META.get('HTTP_AUTHORIZATION')
+        if (auth_header):
+            auth_token_arr = auth_header.split(" ")
+            if (not auth_token_arr or auth_token_arr[0] != 'JWT' or len(auth_token_arr) != 2):
+                result = {'state':'fail' ,'data':'', 'msg':'请传递正确的验证头信息'}  
             else:
-                result = {'state':'fail' ,'data':'', 'msg':payload}
+                auth_token = auth_token_arr[1]
+                payload = self.decode_auth_token(auth_token)
+                if not isinstance(payload, str):
+                    user = UserInfo.objects.get(user_id=payload['data']['user_id'])
+                    if (user is None):
+                        result = {'state':'fail' ,'data':'', 'msg':'找不到该用户信息'}
+                    else:
+                        if (user.login_time == payload['data']['login_time']):
+                            result = {'state':'succ', 'data':user.user_id, 'msg':'请求成功'}
+                        else:
+                            result = {'state':'fail' ,'data':'', 'msg':'Token已更改，请重新登录获取'}
+                else:
+                    result = {'state':'fail' ,'data':'', 'msg':payload}
+        else:
+            result = {'state':'fail' ,'data':'', 'msg':'没有提供认证token'}
         return result

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, FileResponse
 from django.views import View
 import json, os, time
 from django.core import serializers
@@ -53,6 +53,23 @@ class UploadFileView(View):
 		UploadFileInfo.objects.create(file_name=file.name, file_path=file_save_path+'/'+file.name, file_size=file.size, upload_user=upload_user)
 		return JsonResponse({'status': 'succ', 'msg': 'ok'})
 
+# 文件下载
+class DownloadFileView(View):
+	def get(self, request):
+		file_path = request.GET.get('file_path')
+		file_name = request.GET.get('file_name')
+		if not file_path:
+			res_code = 'mi0002'
+			res_msg = '文件路径不能为空'
+			res_state = 'fail'
+		else:		
+			file_directory_root = "C:/Users/ma/Downloads/upload/"
+			file_full_path = file_directory_root + file_path
+			file = open(file_full_path, 'rb')
+			response = FileResponse(file)
+			response['Content-Type'] = 'application/octet-stream'
+			response['Content-Disposition'] = 'attachment;filename=' + file_name
+			return (response)
 
 # 解析post传递的json数据
 '''

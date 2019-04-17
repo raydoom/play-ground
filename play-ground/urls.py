@@ -28,6 +28,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path(r'api/v1.0/get_json_response/', views.JsonResponseView.as_view(), name='get_json_response'),
     path(r'api/v1.0/upload_file/', views.UploadFileView.as_view(), name='upload_file'),
+    path(r'api/v1.0/download_file.png/', views.DownloadFileView.as_view()),
     path(r'api/v1.0/resolve_json/', views.ResolveJsonView.as_view(), name='resolve_json'),
     path(r'api/v1.0/paginator_json/', views.PaginatorJsonView.as_view(), name='paginator_json'),
     path(r'restful/', include(router.urls)),
