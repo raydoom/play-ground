@@ -7,6 +7,9 @@ from django.contrib.auth.hashers import make_password, check_password
 from app.models import UserInfo
 from app.auth.auth_jwt import Auth
 
+# 获取日志记录方法
+logger = logging.getLogger('app')
+
 # 用户注册
 class RegisterView(View):
 	def post(self, request):
@@ -51,6 +54,7 @@ class LoginView(View):
 		res_body = {}
 		user = UserInfo.objects.get(username=username)
 		res_body = Auth.authenticate(Auth ,username, password)
+		logger.debug(res_body)
 		return JsonResponse(res_body)
 
 # 获取用户信息
@@ -58,4 +62,5 @@ class GetUserInfoView(View):
 	def get(self, request):
 		#req_data_msg = json.loads(request.GET.get('dataMsg'))
 		result = Auth.identify(Auth, request)
+		logger.debug(result)
 		return JsonResponse(result)

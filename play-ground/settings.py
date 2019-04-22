@@ -115,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-# CORS 
+# 去除CORS限制 
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
@@ -147,6 +147,69 @@ CORS_ALLOW_HEADERS = (
     'Pragma',
 )
 
+# 日志记录
+log_directory = conf_db.get('log_info', 'log_directory')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s %(levelname)-8s %(message)s'
+        },
+        'detail': {
+            'format': '%(asctime)s %(levelname)-8s %(pathname)s[line:%(lineno)d] %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+        },
+        'django_log': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': log_directory+'django_log.log',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 100,
+            'formatter': 'detail',
+        },
+        'sql_log': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': log_directory+'sql_log.log',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 100,
+            'formatter': 'detail',
+        },
+        'app': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': log_directory+'app.log',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 100,
+            'formatter': 'detail',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': [ 'django_log'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['sql_log'],
+        },
+        # 自定义模块日志
+
+        'app': {
+            'handlers': ['app'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 LANGUAGE_CODE = 'en-us'
 
