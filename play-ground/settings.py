@@ -81,17 +81,23 @@ WSGI_APPLICATION = 'play-ground.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': conf_db.get('db_info', 'db_name'),
-        'USER': conf_db.get('db_info', 'user'),
-        'PASSWORD': conf_db.get('db_info', 'password'),
-        'HOST': conf_db.get('db_info', 'host'),
-        'PORT': conf_db.get('db_info', 'port'),
-    }
-}  
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': conf_db.get('db_info', 'db_name'),
+#         'USER': conf_db.get('db_info', 'user'),
+#         'PASSWORD': conf_db.get('db_info', 'password'),
+#         'HOST': conf_db.get('db_info', 'host'),
+#         'PORT': conf_db.get('db_info', 'port'),
+#     }
+# }  
 
+DATABASES = {
+     'default': {
+         'ENGINE': 'django.db.backends.sqlite3',
+         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+     }
+ }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -148,68 +154,68 @@ CORS_ALLOW_HEADERS = (
 )
 
 # 日志记录
-log_directory = conf_db.get('log_info', 'log_directory')
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'standard': {
-            'format': '%(asctime)s %(levelname)-8s %(message)s'
-        },
-        'detail': {
-            'format': '%(asctime)s %(levelname)-8s %(pathname)s[line:%(lineno)d] %(message)s'
-        },
-    },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'standard',
-        },
-        'django_log': {
-            'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': log_directory+'django_log.log',
-            'maxBytes': 1024 * 1024 * 5,  # 5 MB
-            'backupCount': 100,
-            'formatter': 'detail',
-        },
-        'sql_log': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': log_directory+'sql_log.log',
-            'maxBytes': 1024 * 1024 * 5,  # 5 MB
-            'backupCount': 100,
-            'formatter': 'detail',
-        },
-        'app': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': log_directory+'app.log',
-            'maxBytes': 1024 * 1024 * 5,  # 5 MB
-            'backupCount': 100,
-            'formatter': 'detail',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': [ 'django_log'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'django.db.backends': {
-            'level': 'DEBUG',
-            'handlers': ['sql_log'],
-        },
-        # 自定义模块日志
+# log_directory = conf_db.get('log_info', 'log_directory')
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'standard': {
+#             'format': '%(asctime)s %(levelname)-8s %(message)s'
+#         },
+#         'detail': {
+#             'format': '%(asctime)s %(levelname)-8s %(pathname)s[line:%(lineno)d] %(message)s'
+#         },
+#     },
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'standard',
+#         },
+#         'django_log': {
+#             'level': 'INFO',
+#             'class': 'logging.handlers.RotatingFileHandler',
+#             'filename': log_directory+'django_log.log',
+#             'maxBytes': 1024 * 1024 * 5,  # 5 MB
+#             'backupCount': 100,
+#             'formatter': 'detail',
+#         },
+#         'sql_log': {
+#             'level': 'DEBUG',
+#             'class': 'logging.handlers.RotatingFileHandler',
+#             'filename': log_directory+'sql_log.log',
+#             'maxBytes': 1024 * 1024 * 5,  # 5 MB
+#             'backupCount': 100,
+#             'formatter': 'detail',
+#         },
+#         'app': {
+#             'level': 'DEBUG',
+#             'class': 'logging.handlers.RotatingFileHandler',
+#             'filename': log_directory+'app.log',
+#             'maxBytes': 1024 * 1024 * 5,  # 5 MB
+#             'backupCount': 100,
+#             'formatter': 'detail',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': [ 'django_log'],
+#             'level': 'INFO',
+#             'propagate': True,
+#         },
+#         'django.db.backends': {
+#             'level': 'DEBUG',
+#             'handlers': ['sql_log'],
+#         },
+#         # 自定义模块日志
 
-        'app': {
-            'handlers': ['app'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
+#         'app': {
+#             'handlers': ['app'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#     },
+# }
 
 LANGUAGE_CODE = 'en-us'
 

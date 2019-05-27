@@ -12,9 +12,9 @@ class UserInfo(models.Model):
 	password = models.CharField("密码", max_length=128, blank=False)
 	email = models.CharField("邮箱", max_length=128, blank=True)
 	login_time = models.IntegerField(blank=True, null=True)
-	is_superuser = models.BooleanField("是否超级用户", blank=True)
 	description = models.CharField("描述", max_length=128, blank=True)
-
+	class Meta:
+		db_table = 'app_user_info'
 	def __str__(self):
 		return self.username
 
@@ -25,5 +25,7 @@ class UploadFileInfo(models.Model):
 	file_size = models.CharField("文件大小", max_length=128, blank=False)
 	upload_time = models.DateTimeField("文件上传的日期和时间", max_length=128, default=timezone.now)
 	upload_user = models.CharField("上传文件的用户", max_length=128, blank=True)
+	class Meta:
+		db_table = 'app_upload_file_info'
 	def __str__(self):
 		return self.file_name

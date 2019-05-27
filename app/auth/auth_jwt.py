@@ -7,7 +7,8 @@ from app.utils.config_info_formater import ConfigInfo
 
 # 获取配置文件中的jwt_secret_key
 config = ConfigInfo()
-jwt_secret_key = config.config_info.get('secret_info').get('jwt_secret_key')
+jwt_secret_key = config.config_info.get('jwt_info').get('jwt_secret_key')
+jwt_expire = int(config.config_info.get('jwt_info').get('jwt_expire'))
 
 class Auth():
     # 生成认证Token, 参数user_id: int类型, 参数login_time: 类型int(timestamp)
@@ -32,7 +33,7 @@ class Auth():
     # 验证Token
     def decode_auth_token(auth_token):
         try:
-            #payload = jwt.decode(auth_token, jwt_secret_key, leeway=datetime.timedelta(seconds=30))
+            #payload = jwt.decode(auth_token, jwt_secret_key, leeway=datetime.timedelta(seconds=jwt_expire))
             # 取消过期时间验证
             payload = jwt.decode(auth_token, jwt_secret_key, options={'verify_exp': False})
             if ('data' in payload and 'user_id' in payload['data']):

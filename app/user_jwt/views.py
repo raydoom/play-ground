@@ -13,8 +13,8 @@ logger = logging.getLogger('app')
 # 用户注册
 class RegisterView(View):
 	def post(self, request):
-		req_data_msg = json.loads(request.POST.get('dataMsg'))
-		req_body_data = req_data_msg.get('Body').get('data',{})
+		req_data_msg = json.loads(request.POST.get('data_msg'))
+		req_body_data = req_data_msg.get('body').get('data',{})
 		username = req_body_data.get('username', '')
 		password = req_body_data.get('password', '')
 		repassword = req_body_data.get('repassword')
@@ -47,8 +47,8 @@ class RegisterView(View):
 # 用户登陆
 class LoginView(View):
 	def post(self, request):
-		req_data_msg = json.loads(request.POST.get('dataMsg'))
-		req_body_data = req_data_msg.get('Body').get('data', {})
+		req_data_msg = json.loads(request.POST.get('data_msg'))
+		req_body_data = req_data_msg.get('body').get('data', {})
 		username = req_body_data.get('username')
 		password = req_body_data.get('password')
 		res_body = {}
@@ -60,7 +60,8 @@ class LoginView(View):
 # 获取用户信息
 class GetUserInfoView(View):
 	def get(self, request):
-		#req_data_msg = json.loads(request.GET.get('dataMsg'))
+		request.session['user'] = 'ma'
+		#req_data_msg = json.loads(request.GET.get('data_msg'))
 		result = Auth.identify(Auth, request)
 		logger.debug(result)
 		return JsonResponse(result)
