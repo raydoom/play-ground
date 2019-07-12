@@ -4,7 +4,6 @@ import uuid
 from django.db import models
 import django.utils.timezone as timezone
 
-
 # 用户
 class UserInfo(models.Model):
 	user_id = models.BigAutoField(primary_key=True)
@@ -23,7 +22,7 @@ class UploadFileInfo(models.Model):
 	file_name = models.CharField("文件名", max_length=128, blank=False)
 	file_path = models.CharField("文件完整路径", max_length=128, blank=False)
 	file_size = models.CharField("文件大小", max_length=128, blank=False)
-	upload_time = models.DateTimeField("文件上传的日期和时间", max_length=128, default=timezone.now)
+	upload_time = models.DateTimeField("文件上传时间", default=timezone.now)
 	upload_user = models.CharField("上传文件的用户", max_length=128, blank=True)
 	class Meta:
 		db_table = 'app_upload_file_info'

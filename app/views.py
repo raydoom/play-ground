@@ -50,7 +50,12 @@ class UploadFileView(View):
 				destination.write(chunk)
 		#destination.close()
 		upload_user = request.session.get('user')
-		UploadFileInfo.objects.create(file_name=file.name, file_path=file_save_path+'/'+file.name, file_size=file.size, upload_user=upload_user)
+		UploadFileInfo.objects.create(
+			file_name=file.name,
+			file_path=file_save_path+'/'+file.name,
+			file_size=file.size,
+			upload_user=upload_user
+			)
 		return JsonResponse({'status': 'succ', 'msg': 'ok'})
 
 # 文件下载
@@ -92,9 +97,9 @@ class PaginatorJsonView(View):
 		page = request.GET.get('page', 1)
 		try:
 			current_page = paginator.page(page)
-		except PageNotAnInteger:	# If page is not an integer, deliver first page.
+		except PageNotAnInteger:  # If page is not an integer, deliver first page.
 			current_page = paginator.page(3)
-		except EmptyPage: # If page is out of range (e.g. 9999), deliver last page of results.
+		except EmptyPage:  # If page is out of range (e.g. 9999), deliver last page of results.
 			current_page = paginator.page(paginator.num_pages)
 		print ('-----------------')
 		print (current_page.number) # 当前返回的页面的页码
@@ -110,3 +115,20 @@ class PaginatorJsonView(View):
 		page_data['page_number'] = current_page.number
 		page_data['num_pages'] = paginator.num_pages
 		return JsonResponse(page_data, safe=False)
+
+object_list = {'UserInfo': UserInfo, 'UploadFileInfo': UploadFileInfo}
+# json api入口处理函数
+class JsonApiMainView(View):
+	def get(self, request):
+		data = json.loads(request.body.decode())
+		query = data.get('body').get('query')
+		query_result = {}
+		for q in query:
+			object_name_o = q.get('object')
+			object_name = object_list.get(object_name_o)
+			object_filter = q.get('filter')
+			object_field = tuple(q.get('field'))
+			result = object_name.objects.filter(**object_filter).values(*object_field)
+			result = list(result)
+			query_result[object_name_o] = result
+		return JsonResponse(query_result, safe=False)

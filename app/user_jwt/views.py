@@ -53,15 +53,16 @@ class LoginView(View):
 		password = req_body_data.get('password')
 		res_body = {}
 		user = UserInfo.objects.get(username=username)
-		res_body = Auth.authenticate(Auth ,username, password)
+		auth = Auth()
+		res_body = auth.authenticate(username, password)
 		logger.debug(res_body)
 		return JsonResponse(res_body)
 
 # 获取用户信息
 class GetUserInfoView(View):
 	def get(self, request):
-		request.session['user'] = 'ma'
-		#req_data_msg = json.loads(request.GET.get('data_msg'))
-		result = Auth.identify(Auth, request)
+		# req_data_msg = json.loads(request.GET.get('data_msg'))
+		auth = Auth()
+		result = auth.identify(request)
 		logger.debug(result)
 		return JsonResponse(result)

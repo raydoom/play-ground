@@ -34,6 +34,7 @@ urlpatterns = [
     path(r'restful/', include(router.urls)),
     path(r'api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path(r'api/user_jwt/', include('app.user_jwt.urls')),
+    path(r'', views.JsonApiMainView.as_view()),
 
 
 ]
