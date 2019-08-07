@@ -14,7 +14,7 @@ logger = logging.getLogger('app')
 class RegisterView(View):
 	def post(self, request):
 		req_data_msg = json.loads(request.POST.get('data_msg'))
-		req_body_data = req_data_msg.get('body').get('data',{})
+		req_body_data = req_data_msg.get('body').get('data', {})
 		username = req_body_data.get('username', '')
 		password = req_body_data.get('password', '')
 		repassword = req_body_data.get('repassword')
@@ -41,7 +41,7 @@ class RegisterView(View):
 			res_code = 'mi0001'
 			res_msg = '注册成功'
 			res_state = 'succ'
-			res_body = {'userInfo':{'username':username}}
+			res_body = {'userInfo': {'username': username}}
 		return JsonResponse(res_body)
 
 # 用户登陆
@@ -52,7 +52,7 @@ class LoginView(View):
 		username = req_body_data.get('username')
 		password = req_body_data.get('password')
 		res_body = {}
-		user = UserInfo.objects.get(username=username)
+		# user = UserInfo.objects.get(username=username)
 		auth = Auth()
 		res_body = auth.authenticate(username, password)
 		logger.debug(res_body)
