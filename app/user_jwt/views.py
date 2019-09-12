@@ -6,6 +6,7 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.hashers import make_password, check_password
 from app.models import UserInfo
 from app.auth.auth_jwt import Auth
+from app.utils.message import EmailSender 
 
 # 获取日志记录方法
 logger = logging.getLogger('app')
@@ -18,6 +19,8 @@ class RegisterView(View):
 		username = req_body_data.get('username', '')
 		password = req_body_data.get('password', '')
 		repassword = req_body_data.get('repassword')
+		# email_sender = EmailSender()
+		# email_sender.send_mail('maxd@cloudsecca.com', 'cloudsecca', '11111')
 		res_body = {}
 		if len(username) == 0:
 			res_code = 'mi0002'
