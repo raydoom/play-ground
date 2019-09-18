@@ -65,7 +65,7 @@ class LoginView(View):
 # 获取用户信息
 class GetUserInfoView(View):
 	def get(self, request):
-		# req_data = json.loads(request.body.decode())
+		# # req_data = json.loads(request.body.decode())
 		auth = Auth()
 		result = auth.identify(request)
 		logger.debug(result)

@@ -59,7 +59,7 @@ class Auth():
 		return result
 	# 用户鉴权
 	def identify(self, request):
-		auth_header = request.META.get('HTTP_AUTHORIZATION')
+		auth_header = request.headers.get('Authorization')
 		if auth_header:
 			auth_token_arr = auth_header.split(" ")
 			if (not auth_token_arr or auth_token_arr[0] != 'JWT' or len(auth_token_arr) != 2):
