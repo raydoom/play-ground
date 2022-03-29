@@ -9,7 +9,7 @@ django-cors-headers==3.0.1
 djangorestframework==3.9.4
 dwebsocket==0.5.10
 idna==2.8
-paramiko==2.4.2
+paramiko==2.10.1
 pyasn1==0.4.5
 pycparser==2.19
 PyJWT==1.7.1
